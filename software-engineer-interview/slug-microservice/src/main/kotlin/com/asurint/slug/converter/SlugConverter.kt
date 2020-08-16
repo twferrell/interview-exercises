@@ -1,14 +1,23 @@
 package com.asurint.slug.converter
 
+import com.asurint.slug.loggerFor
 import org.springframework.stereotype.Service
 
 @Service
-class SlugConverter(val processors: List<ISlugProcessor>) {
-	fun convert(description: String) = processors
-		.sortedBy(ISlugProcessor::order)
-		.fold(description, ::process)
+class SlugConverter(processors: List<ISlugProcessor>) {
+	private val processors = processors.sortedBy(ISlugProcessor::order)
+	private val logger = loggerFor(javaClass)
 
-	private fun process(slug: String, slugProcessor: ISlugProcessor) = slugProcessor.process(slug)
+	init {
+		if (logger.isDebugEnabled) {
+			logger.debug("Processing Order:")
+			this.processors.forEach(::println)
+		}
+	}
+
+	fun convert(description: String) = processors.fold(description) { slug, slugProcessor ->
+		slugProcessor.process(slug)
+	}
 }
 
 interface ISlugProcessor {
