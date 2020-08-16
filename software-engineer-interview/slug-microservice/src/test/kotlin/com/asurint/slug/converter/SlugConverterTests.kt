@@ -8,8 +8,11 @@ import org.junit.jupiter.params.provider.Arguments.of
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.annotation.DirtiesContext.ClassMode.*
 
 @SpringBootTest
+@DirtiesContext(classMode = AFTER_CLASS)
 class SlugConverterTests {
 	@Autowired
 	private lateinit var slugConverter: SlugConverter

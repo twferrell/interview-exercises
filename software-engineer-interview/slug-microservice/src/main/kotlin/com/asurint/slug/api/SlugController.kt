@@ -36,7 +36,7 @@ class SlugController(val slugService: SlugService) {
 		return ResponseEntity(slug, HttpStatus.OK)
 	}
 
-	@PatchMapping("/slugs/{slugId}", produces = [APPLICATION_JSON_VALUE])
+	@PostMapping("/slugs/{slugId}", produces = [APPLICATION_JSON_VALUE])
 	fun updateSlug(@PathVariable slugId: String, @RequestBody request: SlugUpdateRequestDto): ResponseEntity<SlugDto> {
 		val slug = slugService.updateSlug(slugId, request.url).toDto()
 

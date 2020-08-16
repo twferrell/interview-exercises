@@ -1,156 +1,91 @@
 package com.asurint.slug.api
 
-import com.asurint.slug.domain.Slug
-import com.asurint.slug.domain.SlugDescription
-import com.asurint.slug.service.SlugService
-import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.hasItem
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.http.HttpHeaders.*
-import org.springframework.http.MediaType.*
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.annotation.DirtiesContext.ClassMode.*
 
-@WebMvcTest(SlugController::class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class SlugControllerTests {
-	@Autowired
-	private lateinit var mockMvc: MockMvc
 
-	@MockkBean
-	private lateinit var slugServiceMock: SlugService
+	@LocalServerPort
+	private val port = 0
+
+	@Autowired
+	private lateinit var restTemplate: TestRestTemplate
 
 	@Test
-	fun `all slugs are returned`() {
-		every { slugServiceMock.getAllSlugs() } returns listOf(
-			Slug().apply {
-				id = "aunt-millies-and-co-inc"
-				url = "https://www.auntmillies.com/"
-				descriptions = mutableListOf(
-					SlugDescription().apply {
-						id = 1
-						slugId = "aunt-millies-and-co-inc"
-						description = "Aunt Millie's & Co., Inc."
-					}
-				)
-			},
-			Slug().apply {
-				id = "the-new-york-times"
-				url = "https://www.nytimes.com/"
-				descriptions = mutableListOf(
-					SlugDescription().apply {
-						id = 1
-						slugId = "the-new-york-times"
-						description = "The New York Times"
-					}
-				)
-			}
+	fun `all persisted slugs are returned`() {
+		val slugList = arrayOf(
+			SlugDto("aunt-millies-and-co-inc", "https://www.auntmillies.com/", listOf("Aunt Millie's & Co., Inc.")),
+			SlugDto("the-new-york-times", "https://www.nytimes.com/", listOf("The New York Times"))
 		)
 
-		mockMvc
-			.perform(get("/slugs"))
-			.andExpect(status().isOk)
-			.andExpect(jsonPath("$[0].id", equalTo("aunt-millies-and-co-inc")))
-			.andExpect(jsonPath("$[1].id", equalTo("the-new-york-times")))
+		assertThat(
+			restTemplate.getForObject("$SERVER:$port/api/slugs", Array<SlugDto>::class.java)
+		).isEqualTo(slugList)
 	}
 
 	@Test
-	fun `requested slug is returned`() {
-		val stubSlugId = "aunt-millies-and-co-inc"
-		every { slugServiceMock.getSlug(any()) } returns Slug().apply {
-			id = stubSlugId
-			url = "https://www.auntmillies.com/"
-			descriptions = mutableListOf(
-				SlugDescription().apply {
-					id = 1
-					slugId = stubSlugId
-					description = "Aunt Millie's & Co., Inc."
-				}
-			)
-		}
-
-		mockMvc
-			.perform(get("/slugs/$stubSlugId"))
-			.andExpect(status().isOk)
-			.andExpect(jsonPath("$.id", equalTo(stubSlugId)))
-			.andExpect(jsonPath("$.descriptions", hasItem("Aunt Millie's & Co., Inc.")))
-			.andExpect(jsonPath("$.url", equalTo("https://www.auntmillies.com/")))
-	}
-
-	@Test
-	fun `slug is deleted and no content is returned`() {
-		val stubSlugId = "aunt-millies-and-co-inc"
-		every { slugServiceMock.deleteSlug(any()) } returns Unit
-
-		mockMvc
-			.perform(delete("/slugs/$stubSlugId"))
-			.andExpect(status().isNoContent)
-	}
-
-	@Test
-	fun `slug is created and returned`() {
+	fun `persisted slug is returned`() {
 		val slugId = "aunt-millies-and-co-inc"
-		val url = "https://www.auntmillies.com/"
-		val desc = "Aunt Millie's & Co., Inc."
-		val body = """
-			{
-		    "url": "$url",
-		    "description": "$desc"
-			}
-		""".trimIndent()
+		val slugDto = SlugDto(slugId, "https://www.auntmillies.com/", listOf("Aunt Millie's & Co., Inc."))
 
-		every { slugServiceMock.addSlug(any(), any()) } returns Slug().apply {
-			id = slugId
-			this.url = url
-			descriptions = mutableListOf(
-				SlugDescription().apply {
-					id = 1
-					this.slugId = slugId
-					description = desc
-				}
-			)
-		}
-
-		mockMvc
-			.perform(
-				post("/slugs").header(CONTENT_TYPE, APPLICATION_JSON).content(body)
-			)
-			.andExpect(status().isOk)
-			.andExpect(jsonPath("$.url", equalTo(url)))
+		assertThat(
+			restTemplate.getForObject("$SERVER:$port/api/slugs/$slugId", SlugDto::class.java)
+		).isEqualTo(slugDto)
 	}
 
 	@Test
-	fun `slug is updated and returned`() {
+	fun `slug is deleted successfully`() {
 		val slugId = "aunt-millies-and-co-inc"
-		val url = "https://www.auntmillies.com/"
-		val desc = "Aunt Millie's & Co., Inc."
-		val body = """
-			{
-		    "url": "$url"
-			}
-		""".trimIndent()
 
-		every { slugServiceMock.updateSlug(any(), any()) } returns Slug().apply {
-			id = slugId
-			this.url = url
-			descriptions = mutableListOf(
-				SlugDescription().apply {
-					id = 1
-					this.slugId = slugId
-					description = desc
-				}
-			)
-		}
+		// Expecting two records in seeded DB before deletion
+		assertThat(
+			restTemplate.getForObject("$SERVER:$port/api/slugs", Array<SlugDto>::class.java).size
+		).isEqualTo(2)
 
-		mockMvc
-			.perform(
-				patch("/slugs/$slugId").header(CONTENT_TYPE, APPLICATION_JSON).content(body)
-			)
-			.andExpect(status().isOk)
-			.andExpect(jsonPath("$.url", equalTo(url)))
+		restTemplate.delete("$SERVER:$port/api/slugs/$slugId")
+
+		// Expecting 1 record in seeded DB after deletion
+		assertThat(
+			restTemplate.getForObject("$SERVER:$port/api/slugs", Array<SlugDto>::class.java).size
+		).isEqualTo(1)
+	}
+
+	@Test
+	fun `slug is created successfully`() {
+		val description = "Google Dot Com"
+		val url = "https://www.google.com/"
+		val expectedId = "google-dot-com"
+		val body = SlugCreateRequestDto(url, description)
+		val slugDto = SlugDto(expectedId, url, listOf(description))
+
+		assertThat(
+			restTemplate.postForObject("$SERVER:$port/api/slugs", body, SlugDto::class.java)
+		).isEqualTo(slugDto)
+	}
+
+	@Test
+	fun `slug is updated successfully`() {
+		val slugId = "aunt-millies-and-co-inc"
+		val newUrl = "https://www.somewhere-else.com/"
+		val body = SlugUpdateRequestDto(newUrl)
+		val slugDto = SlugDto(slugId, newUrl, listOf("Aunt Millie's & Co., Inc."))
+
+		assertThat(
+			restTemplate.postForObject("$SERVER:$port/api/slugs/$slugId", body, SlugDto::class.java)
+		).isEqualTo(slugDto)
+	}
+
+	companion object {
+		private const val SERVER = "http://localhost"
 	}
 }
