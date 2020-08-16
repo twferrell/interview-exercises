@@ -1,5 +1,7 @@
 package com.asurint.slug.api
 
+import com.asurint.slug.domain.Slug
+import com.asurint.slug.domain.SlugDescription
 import com.asurint.slug.service.SlugService
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -14,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
-
 @WebMvcTest(SlugController::class)
 class SlugControllerTests {
 	@Autowired
@@ -26,8 +27,28 @@ class SlugControllerTests {
 	@Test
 	fun `all slugs are returned`() {
 		every { slugServiceMock.getAllSlugs() } returns listOf(
-			Slug("aunt-millies-and-co-inc", "https://www.auntmillies.com/", listOf("Aunt Millie's & Co., Inc.")),
-			Slug("the-new-york-times", "https://www.nytimes.com/", listOf("The New York Times"))
+			Slug().apply {
+				id = "aunt-millies-and-co-inc"
+				url = "https://www.auntmillies.com/"
+				descriptions = mutableListOf(
+					SlugDescription().apply {
+						id = 1
+						slugId = "aunt-millies-and-co-inc"
+						description = "Aunt Millie's & Co., Inc."
+					}
+				)
+			},
+			Slug().apply {
+				id = "the-new-york-times"
+				url = "https://www.nytimes.com/"
+				descriptions = mutableListOf(
+					SlugDescription().apply {
+						id = 1
+						slugId = "the-new-york-times"
+						description = "The New York Times"
+					}
+				)
+			}
 		)
 
 		mockMvc
@@ -40,9 +61,17 @@ class SlugControllerTests {
 	@Test
 	fun `requested slug is returned`() {
 		val stubSlugId = "aunt-millies-and-co-inc"
-		every { slugServiceMock.getSlug(any()) } returns Slug(
-			stubSlugId, "https://www.auntmillies.com/", listOf("Aunt Millie's & Co., Inc.")
-		)
+		every { slugServiceMock.getSlug(any()) } returns Slug().apply {
+			id = stubSlugId
+			url = "https://www.auntmillies.com/"
+			descriptions = mutableListOf(
+				SlugDescription().apply {
+					id = 1
+					slugId = stubSlugId
+					description = "Aunt Millie's & Co., Inc."
+				}
+			)
+		}
 
 		mockMvc
 			.perform(get("/slugs/$stubSlugId"))
@@ -74,7 +103,17 @@ class SlugControllerTests {
 			}
 		""".trimIndent()
 
-		every { slugServiceMock.addSlug(any(), any()) } returns Slug(slugId, url, listOf(desc))
+		every { slugServiceMock.addSlug(any(), any()) } returns Slug().apply {
+			id = slugId
+			this.url = url
+			descriptions = mutableListOf(
+				SlugDescription().apply {
+					id = 1
+					this.slugId = slugId
+					description = desc
+				}
+			)
+		}
 
 		mockMvc
 			.perform(
@@ -95,7 +134,17 @@ class SlugControllerTests {
 			}
 		""".trimIndent()
 
-		every { slugServiceMock.updateSlug(any(), any()) } returns Slug(slugId, url, listOf(desc))
+		every { slugServiceMock.updateSlug(any(), any()) } returns Slug().apply {
+			id = slugId
+			this.url = url
+			descriptions = mutableListOf(
+				SlugDescription().apply {
+					id = 1
+					this.slugId = slugId
+					description = desc
+				}
+			)
+		}
 
 		mockMvc
 			.perform(
