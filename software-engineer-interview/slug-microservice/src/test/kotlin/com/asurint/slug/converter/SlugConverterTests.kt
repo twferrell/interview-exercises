@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 class SlugConverterTests {
 	@Autowired
-	lateinit var slugConverter: SlugConverter
+	private lateinit var slugConverter: SlugConverter
 
 	@ParameterizedTest
 	@MethodSource("arguments")

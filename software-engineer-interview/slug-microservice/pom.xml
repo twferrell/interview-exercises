@@ -23,6 +23,7 @@
 
 		<assertk-jvm.version>0.22</assertk-jvm.version>
 		<mockk.version>1.10.0</mockk.version>
+		<springmockk.version>2.0.3</springmockk.version>
 	</properties>
 
 	<dependencies>
@@ -87,10 +88,6 @@
 					<artifactId>assertj-core</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>org.mockito</groupId>
 					<artifactId>mockito-core</artifactId>
 				</exclusion>
@@ -117,6 +114,11 @@
 			<artifactId>mockk</artifactId>
 			<version>${mockk.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.ninja-squad</groupId>
+			<artifactId>springmockk</artifactId>
+			<version>${springmockk.version}</version>
 		</dependency>
 	</dependencies>
 
