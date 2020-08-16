@@ -1,7 +1,5 @@
 package com.asurint.slug.api
 
-import com.asurint.slug.domain.Slug
-import com.asurint.slug.domain.SlugDescription
 import com.asurint.slug.service.SlugService
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -10,12 +8,13 @@ import org.hamcrest.CoreMatchers.hasItem
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.http.HttpHeaders.*
-import org.springframework.http.MediaType.*
+import org.springframework.http.HttpHeaders.CONTENT_TYPE
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(SlugController::class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -28,30 +27,7 @@ class MockedSlugControllerTests {
 
 	@Test
 	fun `all slugs are returned`() {
-		every { slugServiceMock.getAllSlugs() } returns listOf(
-			Slug().apply {
-				id = "aunt-millies-and-co-inc"
-				url = "https://www.auntmillies.com/"
-				descriptions = mutableListOf(
-					SlugDescription().apply {
-						id = 1
-						slugId = "aunt-millies-and-co-inc"
-						description = "Aunt Millie's & Co., Inc."
-					}
-				)
-			},
-			Slug().apply {
-				id = "the-new-york-times"
-				url = "https://www.nytimes.com/"
-				descriptions = mutableListOf(
-					SlugDescription().apply {
-						id = 1
-						slugId = "the-new-york-times"
-						description = "The New York Times"
-					}
-				)
-			}
-		)
+		every { slugServiceMock.getAllSlugs() } returns listOf(auntMilliesSlug(), nyTimesSlug())
 
 		mockMvc
 			.perform(get("/slugs"))
@@ -62,30 +38,20 @@ class MockedSlugControllerTests {
 
 	@Test
 	fun `requested slug is returned`() {
-		val stubSlugId = "aunt-millies-and-co-inc"
-		every { slugServiceMock.getSlug(any()) } returns Slug().apply {
-			id = stubSlugId
-			url = "https://www.auntmillies.com/"
-			descriptions = mutableListOf(
-				SlugDescription().apply {
-					id = 1
-					slugId = stubSlugId
-					description = "Aunt Millie's & Co., Inc."
-				}
-			)
-		}
+		val slug = auntMilliesSlug()
+		every { slugServiceMock.getSlug(any()) } returns slug
 
 		mockMvc
-			.perform(get("/slugs/$stubSlugId"))
+			.perform(get("/slugs/${slug.id}"))
 			.andExpect(status().isOk)
-			.andExpect(jsonPath("$.id", equalTo(stubSlugId)))
+			.andExpect(jsonPath("$.id", equalTo(slug.id)))
 			.andExpect(jsonPath("$.descriptions", hasItem("Aunt Millie's & Co., Inc.")))
 			.andExpect(jsonPath("$.url", equalTo("https://www.auntmillies.com/")))
 	}
 
 	@Test
 	fun `slug is deleted and no content is returned`() {
-		val stubSlugId = "aunt-millies-and-co-inc"
+		val stubSlugId = auntMilliesSlug().id
 		every { slugServiceMock.deleteSlug(any()) } returns Unit
 
 		mockMvc
@@ -95,64 +61,40 @@ class MockedSlugControllerTests {
 
 	@Test
 	fun `slug is created and returned`() {
-		val slugId = "aunt-millies-and-co-inc"
-		val url = "https://www.auntmillies.com/"
-		val desc = "Aunt Millie's & Co., Inc."
+		val slug = auntMilliesSlug()
 		val body = """
 			{
-		    "url": "$url",
-		    "description": "$desc"
+		    "url": "${slug.url}",
+		    "description": "${slug.descriptions.joinToString("")}"
 			}
 		""".trimIndent()
 
-		every { slugServiceMock.addSlug(any(), any()) } returns Slug().apply {
-			id = slugId
-			this.url = url
-			descriptions = mutableListOf(
-				SlugDescription().apply {
-					id = 1
-					this.slugId = slugId
-					description = desc
-				}
-			)
-		}
+		every { slugServiceMock.addSlug(any(), any()) } returns slug
 
 		mockMvc
 			.perform(
 				post("/slugs").header(CONTENT_TYPE, APPLICATION_JSON).content(body)
 			)
 			.andExpect(status().isOk)
-			.andExpect(jsonPath("$.url", equalTo(url)))
+			.andExpect(jsonPath("$.url", equalTo(slug.url)))
 	}
 
 	@Test
 	fun `slug is updated and returned`() {
-		val slugId = "aunt-millies-and-co-inc"
-		val url = "https://www.auntmillies.com/"
-		val desc = "Aunt Millie's & Co., Inc."
+		val slug = auntMilliesSlug()
 		val body = """
 			{
-		    "url": "$url"
+		    "url": "${slug.url}"
 			}
 		""".trimIndent()
 
-		every { slugServiceMock.updateSlug(any(), any()) } returns Slug().apply {
-			id = slugId
-			this.url = url
-			descriptions = mutableListOf(
-				SlugDescription().apply {
-					id = 1
-					this.slugId = slugId
-					description = desc
-				}
-			)
-		}
+		every { slugServiceMock.updateSlug(any(), any()) } returns slug
 
 		mockMvc
 			.perform(
-				post("/slugs/$slugId").header(CONTENT_TYPE, APPLICATION_JSON).content(body)
+				post("/slugs/${slug.id}").header(CONTENT_TYPE, APPLICATION_JSON).content(body)
 			)
 			.andExpect(status().isOk)
-			.andExpect(jsonPath("$.url", equalTo(url)))
+			.andExpect(jsonPath("$.url", equalTo(slug.url)))
 	}
 }

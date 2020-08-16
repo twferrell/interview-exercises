@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.annotation.DirtiesContext
-import org.springframework.test.annotation.DirtiesContext.ClassMode.*
+import org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
@@ -24,8 +24,8 @@ class SlugControllerTests {
 	@Test
 	fun `all persisted slugs are returned`() {
 		val slugList = arrayOf(
-			SlugDto("aunt-millies-and-co-inc", "https://www.auntmillies.com/", listOf("Aunt Millie's & Co., Inc.")),
-			SlugDto("the-new-york-times", "https://www.nytimes.com/", listOf("The New York Times"))
+			auntMilliesSlug().toDto(),
+			nyTimesSlug().toDto()
 		)
 
 		assertThat(
@@ -35,11 +35,10 @@ class SlugControllerTests {
 
 	@Test
 	fun `persisted slug is returned`() {
-		val slugId = "aunt-millies-and-co-inc"
-		val slugDto = SlugDto(slugId, "https://www.auntmillies.com/", listOf("Aunt Millie's & Co., Inc."))
+		val slugDto = auntMilliesSlug().toDto()
 
 		assertThat(
-			restTemplate.getForObject("$SERVER:$port/api/slugs/$slugId", SlugDto::class.java)
+			restTemplate.getForObject("$SERVER:$port/api/slugs/${slugDto.id}", SlugDto::class.java)
 		).isEqualTo(slugDto)
 	}
 
@@ -75,13 +74,11 @@ class SlugControllerTests {
 
 	@Test
 	fun `slug is updated successfully`() {
-		val slugId = "aunt-millies-and-co-inc"
-		val newUrl = "https://www.somewhere-else.com/"
-		val body = SlugUpdateRequestDto(newUrl)
-		val slugDto = SlugDto(slugId, newUrl, listOf("Aunt Millie's & Co., Inc."))
+		val slugDto = auntMilliesSlug().toDto()
+		val body = SlugUpdateRequestDto(slugDto.url)
 
 		assertThat(
-			restTemplate.postForObject("$SERVER:$port/api/slugs/$slugId", body, SlugDto::class.java)
+			restTemplate.postForObject("$SERVER:$port/api/slugs/${slugDto.id}", body, SlugDto::class.java)
 		).isEqualTo(slugDto)
 	}
 

@@ -4,7 +4,7 @@ import com.asurint.slug.domain.Slug
 import com.asurint.slug.loggerFor
 import com.asurint.slug.service.SlugService
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType.*
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

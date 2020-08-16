@@ -31,19 +31,11 @@ class SlugServiceImpl(
 	override fun addSlug(url: String, description: String): Slug {
 		val slugId = slugConverter.convert(description)
 		val optional = slugRepository.findById(slugId)
+
 		val slug = if (optional.isPresent) {
-			addDescription(optional.get(), description, slugId)
+			optional.get().apply { addDescription(description) }
 		} else {
-			Slug().apply {
-				this.id = slugId
-				this.url = url
-				descriptions = mutableListOf(
-					SlugDescription().apply {
-						this.slugId = slugId
-						this.description = description
-					}
-				)
-			}
+			Slug(slugId, url, mutableSetOf(SlugDescription(slugId, description)))
 		}
 		return slugRepository.save(slug)
 	}
@@ -54,22 +46,5 @@ class SlugServiceImpl(
 		return slugRepository.save(slug)
 	}
 
-	override fun deleteSlug(slugId: String) {
-		val optional = slugRepository.findById(slugId)
-		if (optional.isPresent) {
-			slugRepository.delete(optional.get())
-		}
-	}
-
-	private fun addDescription(slug: Slug, desc: String, id: String): Slug {
-		val descriptions = slug.descriptions
-		val found = descriptions.find { it.description == desc }
-		if (found == null) {
-			slug.descriptions.add(SlugDescription().apply {
-				slugId = id
-				description = desc
-			})
-		}
-		return slug
-	}
+	override fun deleteSlug(slugId: String) = slugRepository.findById(slugId).ifPresent { slugRepository.delete(it) }
 }

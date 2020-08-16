@@ -4,14 +4,14 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "slug_descriptions", schema = "site_data")
-class SlugDescription {
+data class SlugDescription(
+	@Column(name = "slug_id")
+	val slugId: String,
+
+	@Column(name = "description")
+	val description: String
+) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	var id: Long = 0
-
-	@Column(name = "slug_id")
-	lateinit var slugId: String
-
-	@Column(name = "description")
-	lateinit var description: String
 }
