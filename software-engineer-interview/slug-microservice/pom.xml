@@ -20,11 +20,11 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<kotlin.version>1.3.72</kotlin.version>
-
 		<assertk-jvm.version>0.22</assertk-jvm.version>
 		<mockk.version>1.10.0</mockk.version>
 		<springmockk.version>2.0.3</springmockk.version>
 		<swagger2.version>2.7.0</swagger2.version>
+		<surefire.version>2.22.2</surefire.version>
 	</properties>
 
 	<dependencies>
@@ -170,6 +170,11 @@
 						<version>${kotlin.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
 			</plugin>
 		</plugins>
 	</build>
