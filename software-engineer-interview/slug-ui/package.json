@@ -1,0 +1,36 @@
+{
+  "name": "slug-ui",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "3.9.3",
+    "add": "2.0.6",
+    "axios": "0.19.2",
+    "dot-object": "1.7.1",
+    "express": "4.16.4",
+    "express-favicon": "2.0.1",
+    "path": "0.12.7",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-scripts": "3.0.1",
+    "validator": "10.11.0"
+  },
+  "scripts": {
+    "serve": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start": "node server.js",
+    "autopush": "git add . && git commit -m 'autopush' && git push && git push heroku master"
+  },
+  "proxy": "http://localhost:8080",
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
