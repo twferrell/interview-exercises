@@ -2,6 +2,10 @@ package com.asurint.slug.domain
 
 import javax.persistence.*
 
+/**
+ * Multiple descriptions may result in the same slug, therefore
+ * the different variations used are persisted in a foreign table.
+ */
 @Entity
 @Table(name = "slug_descriptions", schema = "site_data")
 data class SlugDescription(

@@ -15,8 +15,15 @@ interface SlugService {
 	fun deleteSlug(slugId: String)
 }
 
+/**
+ * This implementation of the slug service delegates down to JPA repository
+ * for persistence of the slug entities.
+ *
+ * @property slugRepository is a JPA repository used for managing the entity persistence
+ * @property slugConverter is used for normalizing the description to a proper url slug
+ */
 @Service
-class SlugServiceImpl(
+class JpaSlugService(
 	val slugRepository: SlugRepository,
 	val slugConverter: SlugConverter
 ) : SlugService {
@@ -33,7 +40,10 @@ class SlugServiceImpl(
 		val optional = slugRepository.findById(slugId)
 
 		val slug = if (optional.isPresent) {
-			optional.get().apply { addDescription(description) }
+			optional.get().apply {
+				this.url = url
+				addDescription(description)
+			}
 		} else {
 			Slug(slugId, url, mutableSetOf(SlugDescription(slugId, description)))
 		}

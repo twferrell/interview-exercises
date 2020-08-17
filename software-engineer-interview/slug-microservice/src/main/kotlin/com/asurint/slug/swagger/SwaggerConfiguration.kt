@@ -17,7 +17,7 @@ class SwaggerConfiguration {
 	fun api(): Docket = Docket(SWAGGER_2)
 		.select()
 		.apis(RequestHandlerSelectors.basePackage("com.asurint.slug.api"))
-		.paths(PathSelectors.any())
+		.paths(PathSelectors.ant("/slugs/**"))
 		.build()
 		.apiInfo(apiInfo())
 

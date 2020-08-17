@@ -16,6 +16,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+/**
+ * These tests focus on the API layer/contracts and were written in a TDD-based fashion,
+ * having the service details originally mocked out.
+ */
 @WebMvcTest(SlugController::class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MockedSlugControllerTests {

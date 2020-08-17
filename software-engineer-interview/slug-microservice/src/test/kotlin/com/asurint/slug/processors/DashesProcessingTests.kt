@@ -4,6 +4,10 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 
+/**
+ * A set of unit tests on individual processors,
+ * focused on processing the required rules for handling dashes.
+ */
 class DashesProcessingTests {
 	@Test
 	fun `consecutive dashes are replaced with a single dash globally`() {

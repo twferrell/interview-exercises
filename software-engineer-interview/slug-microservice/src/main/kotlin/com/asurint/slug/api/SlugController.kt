@@ -8,6 +8,13 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+/**
+ * This controller supports a set of RESTful APIs allowing
+ * the consumer to perform a basic set of CRUD operations
+ * on slug-resources.
+ *
+ * @property slugService used for handling the lookups and mutations to the underlying slug resources
+ */
 @RestController
 class SlugController(val slugService: SlugService) {
 	private val logger = loggerFor(javaClass)

@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * This controller will send back a location redirect based on the
+ * url property found on the slug.
+ *
+ * @property slugService is used to lookup a slug based on its ID
+ */
 @Controller
 class RedirectController(val slugService: SlugService) {
 	private val logger = loggerFor(javaClass)
