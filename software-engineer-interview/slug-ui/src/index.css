@@ -1,135 +1,138 @@
 body {
-	font-size: 16px;
-	font-family: Arial, sans-serif;
-	margin: 0;
-	color: #222222;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  color: #222222;
 }
 
 h3 {
-	font-weight: 100;
-	color: #000000;
+  font-weight: 100;
+  color: #000000;
 }
 
-input, textarea, button {
-	font-size: 0.9rem;
+input,
+textarea,
+button {
+  font-size: 0.9rem;
 }
 
 .container {
-	max-width: 900px;
-	margin: 2rem auto;
-	padding: 0 2rem;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 2rem;
 }
 
 .instructions {
-	font-style: italic;
+  font-style: italic;
 }
 
 hr {
-	border: none;
-	height: 1px;
-	display: block;
-	background: rgba(0, 0, 0, 0.15);
-	margin: 1.5rem 0;
+  border: none;
+  height: 1px;
+  display: block;
+  background: rgba(0, 0, 0, 0.15);
+  margin: 1.5rem 0;
 }
 
 input {
-	border: 1px #eaeaea solid;
-	margin-bottom: 1rem;
-	display: block;
-	margin-right: 1rem;
+  border: 1px #eaeaea solid;
+  margin-bottom: 1rem;
+  display: block;
+  margin-right: 1rem;
 }
 
 input + span {
-	margin-top: -0.7rem;
-	display: block;
-	color: red;
-	margin-bottom: 1rem;
+  margin-top: -0.7rem;
+  display: block;
+  color: red;
+  margin-bottom: 1rem;
 }
 
 .has-error {
-	border-color: red;
+  border-color: red;
 }
 
-input, button {
-	padding: 0.3rem 0.5rem;
-	border-radius: 0.3rem;
+input,
+button {
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.3rem;
 }
 
 button {
-	background: rgb(146, 187, 193);
-	color: #ffffff;
-	border: none;
-	cursor: pointer;
-	outline: none;
+  background: rgb(146, 187, 193);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  outline: none;
 }
 
 button:disabled {
-	background: #e0e0e0;
-	cursor: not-allowed;
+  background: #e0e0e0;
+  cursor: not-allowed;
 }
 
 form {
-	background: #ffffff;
-	padding: 1.5rem;
-	border-radius: 1rem;
-	box-shadow: 0 0.2rem 0.7rem rgb(146, 187, 193);
-	border: 1px rgba(0, 0, 0, 0.05) solid;
-	margin-bottom: 1rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.2rem 0.7rem rgb(146, 187, 193);
+  border: 1px rgba(0, 0, 0, 0.05) solid;
+  margin-bottom: 1rem;
 }
 
 @media screen and (min-width: 1366px) {
-	.form-body {
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: flex-start;
-	}
+  .form-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 }
 
 @media screen and (max-width: 1366px) {
-	input {
-		display: block;
-	}
+  input {
+    display: block;
+  }
 }
 
 .form-body label {
-	margin: 0.3rem 0.5rem 0 0;
-	font-weight: bold;
-	color: rgb(146, 187, 193)
+  margin: 0.3rem 0.5rem 0 0;
+  font-weight: bold;
+  color: rgb(146, 187, 193);
 }
 
 .form-checkbox-group label {
-	display: block;
-	margin-bottom: 1rem;
-	margin-top: 1rem;
+  display: block;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 a {
-	color: rgb(146, 187, 193);
-	text-decoration: none;
-	padding: 10px;
+  color: rgb(146, 187, 193);
+  text-decoration: none;
+  padding: 10px;
 }
 
 a:hover {
-	color: white;
-	background-color: rgb(146, 187, 193);
-	text-decoration: none;
+  color: white;
+  background-color: rgb(146, 187, 193);
+  text-decoration: none;
 }
 
 .slug-url {
-	margin-top: 500px;
-	font-weight: bold;
-	font-size: 25px;
+  margin-top: 500px;
+  font-weight: bold;
+  font-size: 25px;
 }
 
 .error-message {
-	color: red;
-	font-weight: bold;
-	padding: 10px;
+  color: red;
+  font-weight: bold;
+  padding: 10px;
 }
 
 .loading-message {
-	color: black;
-	font-weight: bold;
-	padding: 10px;
+  color: black;
+  font-weight: bold;
+  padding: 10px;
 }

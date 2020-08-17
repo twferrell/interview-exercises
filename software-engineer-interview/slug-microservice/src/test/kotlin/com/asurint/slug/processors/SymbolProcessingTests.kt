@@ -4,6 +4,10 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 
+/**
+ * A set of unit tests on individual processors,
+ * focused on processing the required rules for handling special character-symbols.
+ */
 class SymbolProcessingTests {
 	@Test
 	fun `at symbols are replaced globally`() {

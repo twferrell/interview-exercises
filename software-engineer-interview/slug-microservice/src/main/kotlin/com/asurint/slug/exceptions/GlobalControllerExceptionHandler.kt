@@ -16,12 +16,11 @@ class GlobalControllerExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	fun handleBackendException(e: Throwable) = ErrorContainer(e.message ?: BackendException().message)
 
-	// This gets called if there are no matches to another exception handler.
-	// The idea here is we don't want to leak low-level exceptions to the API,
-	// so this handler will return a very generic error message.
-	// If there's a need to convey a specific error message to the consumer of the API,
-	// you should explicitly create another exception handler above, giving the ability to specify a
-	// specific exception and corresponding error message.
+	/**
+	 * This gets called if there are no matches to another exception handler.
+	 * The idea here is we don't want to leak low-level exceptions to the API,
+	 * so this handler will return a very generic error message.
+	 */
 	@ExceptionHandler(value = [RuntimeException::class, Exception::class])
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	fun handleRuntimeException(e: Throwable) = ErrorContainer("Unexpected backend exception occurred!")

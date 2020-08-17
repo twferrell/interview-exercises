@@ -11,6 +11,11 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD
 
+/**
+ * Set of full integration tests that go through all the application layers.
+ * The database is re-seeded for each test method run so that there are no
+ * side-effects from sibling tests affecting the test result expectations.
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class SlugControllerTests {
