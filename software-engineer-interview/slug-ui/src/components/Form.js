@@ -5,15 +5,6 @@ import { useAsyncEndpoint } from '../hooks/fetch';
 
 const slugsAPI = '/api/slugs';
 
-function postSlugEndpoint() {
-  /* eslint-disable react-hooks/rules-of-hooks */
-  return useAsyncEndpoint((data) => ({
-    url: slugsAPI,
-    method: 'POST',
-    data,
-  }));
-}
-
 const Form = () => {
   const defaultValues = {
     url: '',
@@ -25,7 +16,12 @@ const Form = () => {
     className: 'has-error',
   };
 
-  const [resp, postSlug] = postSlugEndpoint();
+  const [resp, postSlug] = useAsyncEndpoint((data) => ({
+    url: slugsAPI,
+    method: 'POST',
+    data,
+  }));
+
   const { values, setValues, useInput, isValid } = useForm(
     defaultValues,
     customErrorAttribute
